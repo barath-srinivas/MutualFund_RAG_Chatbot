@@ -5,7 +5,8 @@
 buildCommand = "pip install -r requirements.txt -r requirements-phase1.txt -r requirements-phase2.txt && pip install certifi && playwright install chromium && playwright install-deps chromium"
 
 [deploy]
-startCommand = "uvicorn src.main:app --host :: --port ${PORT}"
+# Shell required so Railway's PORT env is expanded (bare ${PORT} is passed literally otherwise)
+startCommand = "sh -c 'exec uvicorn src.main:app --host 0.0.0.0 --port ${PORT}'"
 healthcheckPath = "/health"
 healthcheckTimeout = 120
 restartPolicyType = "ON_FAILURE"
