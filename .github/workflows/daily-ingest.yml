@@ -31,17 +31,28 @@ jobs:
             exit 1
           fi
           BASE="${RAILWAY_API_BASE_URL%/}"
+          case "${BASE}" in
+            https://*) ;;
+            http://*)
+              echo "::error::RAILWAY_API_BASE_URL must use https:// (http:// causes HTTP 301 redirect). Use: https://mutualfundragchatbot-production.up.railway.app"
+              exit 1
+              ;;
+            *)
+              echo "::error::RAILWAY_API_BASE_URL must start with https:// (got: ${BASE})"
+              exit 1
+              ;;
+          esac
           URL="${BASE}/internal/ingest"
           echo "POST ${URL}"
-          # -f fails on 4xx/5xx; full ingest usually takes 30–60+ min, not seconds
+          # Full ingest usually takes 30–60+ min. --post301/--post302 keep POST on redirect if needed.
           RESPONSE_FILE="$(mktemp)"
-          HTTP_CODE="$(curl -sS --max-time 7200 -w "%{http_code}" -o "${RESPONSE_FILE}" -X POST "${URL}" \
+          HTTP_CODE="$(curl -sS --max-time 7200 -L --post301 --post302 -w "%{http_code}" -o "${RESPONSE_FILE}" -X POST "${URL}" \
             -H "Authorization: Bearer ${INGEST_TRIGGER_SECRET}" \
             -H "Content-Type: application/json")"
           echo "HTTP ${HTTP_CODE}"
           cat "${RESPONSE_FILE}"
           if [ "${HTTP_CODE}" -lt 200 ] || [ "${HTTP_CODE}" -ge 300 ]; then
-            echo "::error::Ingest trigger failed (HTTP ${HTTP_CODE}). Check ENABLE_INTERNAL_INGEST, INGEST_TRIGGER_SECRET, and Railway logs."
+            echo "::error::Ingest trigger failed (HTTP ${HTTP_CODE}). For 301: set RAILWAY_API_BASE_URL to your Railway https URL with no trailing slash. Also check ENABLE_INTERNAL_INGEST and INGEST_TRIGGER_SECRET."
             exit 1
           fi
           if grep -q '"total_chunks": 0' "${RESPONSE_FILE}" 2>/dev/null; then

@@ -63,7 +63,7 @@ Settings → Secrets and variables → Actions → **Repository secrets**:
 
 | Secret | Value |
 |--------|--------|
-| `RAILWAY_API_BASE_URL` | Public Railway API URL, e.g. `https://your-api.up.railway.app` (**no** trailing slash, **no** `/internal/ingest` path) |
+| `RAILWAY_API_BASE_URL` | Public Railway API URL, e.g. `https://your-api.up.railway.app` (**must** be `https://` — `http://` returns HTTP 301 and fails the workflow; **no** trailing slash, **no** `/internal/ingest` path) |
 | `INGEST_TRIGGER_SECRET` | **Same** as Railway `INGEST_TRIGGER_SECRET` |
 
 ---
