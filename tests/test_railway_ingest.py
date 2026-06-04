@@ -34,7 +34,18 @@ def test_internal_ingest_requires_secret(ingest_client: TestClient) -> None:
     assert resp.status_code == 401
 
 
-def test_internal_ingest_runs_pipeline(ingest_client: TestClient) -> None:
+def test_internal_ingest_starts_background_job(ingest_client: TestClient) -> None:
+    with patch("src.api.internal_ingest.threading.Thread") as mock_thread:
+        resp = ingest_client.post(
+            "/internal/ingest",
+            headers={"Authorization": "Bearer test-secret"},
+        )
+    assert resp.status_code == 202
+    assert resp.json()["status"] == "accepted"
+    mock_thread.assert_called_once()
+
+
+def test_internal_ingest_worker_runs_pipeline() -> None:
     report = IngestRunReport(
         run_id="ingest_test",
         started_at="2026-06-01T00:00:00+00:00",
@@ -50,13 +61,14 @@ def test_internal_ingest_runs_pipeline(ingest_client: TestClient) -> None:
         chunks_by_scheme={"icici-large-cap": 5},
     )
     with patch("src.api.internal_ingest.run_ingest", return_value=report):
-        resp = ingest_client.post(
-            "/internal/ingest",
-            headers={"Authorization": "Bearer test-secret"},
-        )
-    assert resp.status_code == 200
-    assert resp.json()["run_id"] == "ingest_test"
-    assert resp.json()["total_chunks"] == 5
+        from src.api import internal_ingest as mod
+
+        mod._running = True
+        try:
+            mod._ingest_worker()
+        finally:
+            mod._running = False
+    assert mod._running is False
 
 
 def test_corpus_status_reads_last_ingest(ingest_client: TestClient, tmp_path: Path) -> None:

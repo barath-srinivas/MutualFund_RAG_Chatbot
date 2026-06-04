@@ -34,7 +34,7 @@ jobs:
           case "${BASE}" in
             https://*) ;;
             http://*)
-              echo "::error::RAILWAY_API_BASE_URL must use https:// (http:// causes HTTP 301 redirect). Use: https://mutualfundragchatbot-production.up.railway.app"
+              echo "::error::RAILWAY_API_BASE_URL must use https:// (http:// causes HTTP 301 redirect)."
               exit 1
               ;;
             *)
@@ -43,18 +43,32 @@ jobs:
               ;;
           esac
           URL="${BASE}/internal/ingest"
+          STATUS_URL="${BASE}/corpus-status"
           echo "POST ${URL}"
-          # Full ingest usually takes 30–60+ min. --post301/--post302 keep POST on redirect if needed.
           RESPONSE_FILE="$(mktemp)"
-          HTTP_CODE="$(curl -sS --max-time 7200 -L --post301 --post302 -w "%{http_code}" -o "${RESPONSE_FILE}" -X POST "${URL}" \
+          HTTP_CODE="$(curl -sS --max-time 120 -L --post301 --post302 -w "%{http_code}" -o "${RESPONSE_FILE}" -X POST "${URL}" \
             -H "Authorization: Bearer ${INGEST_TRIGGER_SECRET}" \
             -H "Content-Type: application/json")"
           echo "HTTP ${HTTP_CODE}"
           cat "${RESPONSE_FILE}"
-          if [ "${HTTP_CODE}" -lt 200 ] || [ "${HTTP_CODE}" -ge 300 ]; then
-            echo "::error::Ingest trigger failed (HTTP ${HTTP_CODE}). For 301: set RAILWAY_API_BASE_URL to your Railway https URL with no trailing slash. Also check ENABLE_INTERNAL_INGEST and INGEST_TRIGGER_SECRET."
+          if [ "${HTTP_CODE}" != "202" ] && [ "${HTTP_CODE}" != "200" ]; then
+            echo "::error::Ingest trigger failed (HTTP ${HTTP_CODE}). Check https URL, ENABLE_INTERNAL_INGEST, INGEST_TRIGGER_SECRET, Railway logs."
             exit 1
           fi
-          if grep -q '"total_chunks": 0' "${RESPONSE_FILE}" 2>/dev/null; then
-            echo "::warning::Ingest finished quickly with total_chunks=0 — see Railway logs for Playwright/fetch errors."
-          fi
+
+          echo "Polling ${STATUS_URL} until last_ingest is set (up to ~120 min)..."
+          for attempt in $(seq 1 120); do
+            sleep 60
+            STATUS="$(curl -sS --max-time 30 "${STATUS_URL}")"
+            echo "[$attempt] ${STATUS}"
+            if echo "${STATUS}" | grep -q '"last_ingest": null'; then
+              continue
+            fi
+            if echo "${STATUS}" | grep -q '"chunk_count": 0[,}]'; then
+              echo "::warning::Ingest finished but chunk_count is 0 — check Railway logs for fetch/Playwright errors."
+            fi
+            echo "Ingest completed (last_ingest present)."
+            exit 0
+          done
+          echo "::error::Timed out waiting for ingest to finish on Railway. Check Railway logs for corpus-ingest thread."
+          exit 1

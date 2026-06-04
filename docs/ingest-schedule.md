@@ -25,7 +25,7 @@ flowchart LR
 | **GitHub Actions** | [`daily-ingest.yml`](../.github/workflows/daily-ingest.yml) — `30 4 * * *` UTC = 10:00 IST |
 | **Vercel UI** | `POST /chat` → API reads the current index (no redeploy after ingest) |
 
-Ingest always runs **on the API host** (where the disk is). The workflow only sends one authenticated HTTP request; it does not build Chroma on the Actions runner.
+Ingest always runs **on the API host** (where the disk is). The workflow sends `POST /internal/ingest` (returns **202** immediately), then polls `GET /corpus-status` until `last_ingest` is set — so Railway/proxy HTTP timeouts do not kill a 30–60+ minute job.
 
 ---
 

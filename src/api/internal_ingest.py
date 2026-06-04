@@ -2,9 +2,11 @@ from __future__ import annotations
 
 import logging
 import threading
+from datetime import datetime, timezone
 from typing import Any
 
 from fastapi import APIRouter, Header, HTTPException
+from fastapi.responses import JSONResponse
 
 from src.config.settings import get_settings
 from src.ingest.pipeline import run_ingest
@@ -31,12 +33,36 @@ def _authorize(authorization: str | None) -> None:
         raise HTTPException(status_code=403, detail="Forbidden")
 
 
-@router.post("/internal/ingest")
-def trigger_ingest(authorization: str | None = Header(default=None)) -> dict[str, Any]:
-    """
-    Run corpus ingest on this service (where Chroma volume is mounted).
+def _ingest_worker() -> None:
+    global _running
+    settings = get_settings()
+    try:
+        logger.info("Starting scheduled corpus ingest (manifest=%s)", settings.corpus_urls_path)
+        report = run_ingest(
+            manifest_path=settings.corpus_urls_path,
+            dry_run=False,
+            save_raw=False,
+        )
+        logger.info(
+            "Corpus ingest finished: %s chunks, %s failed (run_id=%s)",
+            report.total_chunks,
+            report.sources_failed,
+            report.run_id,
+        )
+    except Exception:
+        logger.exception("Corpus ingest failed")
+    finally:
+        with _lock:
+            _running = False
 
-    Called by GitHub Actions (or Railway cron) at 10:00 IST; ingest runs on this host where Chroma is mounted.
+
+@router.post("/internal/ingest")
+def trigger_ingest(authorization: str | None = Header(default=None)) -> JSONResponse:
+    """
+    Start corpus ingest on this service (where Chroma volume is mounted).
+
+    Returns 202 immediately; ingest runs in a background thread so Railway/proxy
+    timeouts do not kill a 30–60+ minute job. Poll GET /corpus-status for completion.
     """
     global _running
     _authorize(authorization)
@@ -46,27 +72,15 @@ def trigger_ingest(authorization: str | None = Header(default=None)) -> dict[str
             raise HTTPException(status_code=409, detail="Ingest already in progress")
         _running = True
 
-    settings = get_settings()
-    try:
-        logger.info("Starting scheduled corpus ingest (manifest=%s)", settings.corpus_urls_path)
-        report = run_ingest(
-            manifest_path=settings.corpus_urls_path,
-            dry_run=False,
-            save_raw=False,
-        )
-        return {
-            "status": "ok",
-            "run_id": report.run_id,
-            "finished_at": report.finished_at,
-            "sources_processed": report.sources_processed,
-            "sources_failed": report.sources_failed,
-            "sources_skipped": report.sources_skipped,
-            "total_chunks": report.total_chunks,
-            "errors": report.errors[:5],
-        }
-    except Exception as exc:
-        logger.exception("Corpus ingest failed: %s", exc)
-        raise HTTPException(status_code=500, detail="Ingest failed; see API logs") from exc
-    finally:
-        with _lock:
-            _running = False
+    started_at = datetime.now(timezone.utc).isoformat()
+    thread = threading.Thread(target=_ingest_worker, name="corpus-ingest", daemon=True)
+    thread.start()
+
+    return JSONResponse(
+        status_code=202,
+        content={
+            "status": "accepted",
+            "message": "Ingest started in background; poll /corpus-status for completion.",
+            "started_at": started_at,
+        },
+    )
