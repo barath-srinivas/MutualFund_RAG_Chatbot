@@ -1,0 +1,89 @@
+# Official URL registry — source of truth: docs/MF_URL.md
+# Only listed www.icicipruamc.com product pages are ingested and cited.
+version: 2
+amc: ICICI Prudential Mutual Fund
+
+factsheet_canonical:
+  icici-large-cap: https://www.icicipruamc.com/mutual-fund/equity-funds/icici-prudential-large-cap-fund/211
+  icici-manufacturing: https://www.icicipruamc.com/mutual-fund/equity-funds/icici-prudential-manufacturing-fund/1657
+  icici-phd: https://www.icicipruamc.com/mutual-fund/equity-funds/icici-prudential-pharma-healthcare-and-diagnostics--p.h.d-fund/1634
+  icici-us-bluechip: https://www.icicipruamc.com/mutual-fund/equity-funds/icici-prudential-us-bluechip-equity-fund/437
+  icici-multi-asset: https://www.icicipruamc.com/mutual-fund/hybrid-funds/icici-prudential-multi-asset-fund/55
+  icici-nifty-auto: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-auto-index-fund/1851
+  icici-nifty-50: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-50-index-fund/57
+  icici-nifty-500: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-500-index-fund/1884
+  icici-nifty-bank: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-bank-index-fund/1839
+  icici-nifty-smallcap-250: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-smallcap-250-index-fund/1828
+
+shared_sources: []
+
+sources:
+  - id: icici-large-cap-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/equity-funds/icici-prudential-large-cap-fund/211
+    doc_type: amc_product_page
+    scheme_id: icici-large-cap
+    topic: fund_management
+    allowed_for_citation: true
+
+  - id: icici-manufacturing-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/equity-funds/icici-prudential-manufacturing-fund/1657
+    doc_type: amc_product_page
+    scheme_id: icici-manufacturing
+    topic: fund_management
+    allowed_for_citation: true
+
+  - id: icici-phd-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/equity-funds/icici-prudential-pharma-healthcare-and-diagnostics--p.h.d-fund/1634
+    doc_type: amc_product_page
+    scheme_id: icici-phd
+    topic: fund_management
+    allowed_for_citation: true
+
+  - id: icici-us-bluechip-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/equity-funds/icici-prudential-us-bluechip-equity-fund/437
+    doc_type: amc_product_page
+    scheme_id: icici-us-bluechip
+    topic: fund_management
+    allowed_for_citation: true
+
+  - id: icici-multi-asset-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/hybrid-funds/icici-prudential-multi-asset-fund/55
+    doc_type: amc_product_page
+    scheme_id: icici-multi-asset
+    topic: fund_management
+    allowed_for_citation: true
+
+  - id: icici-nifty-auto-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-auto-index-fund/1851
+    doc_type: amc_product_page
+    scheme_id: icici-nifty-auto
+    topic: fund_management
+    allowed_for_citation: true
+
+  - id: icici-nifty-50-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-50-index-fund/57
+    doc_type: amc_product_page
+    scheme_id: icici-nifty-50
+    topic: fund_management
+    allowed_for_citation: true
+
+  - id: icici-nifty-500-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-500-index-fund/1884
+    doc_type: amc_product_page
+    scheme_id: icici-nifty-500
+    topic: fund_management
+    allowed_for_citation: true
+
+  - id: icici-nifty-bank-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-bank-index-fund/1839
+    doc_type: amc_product_page
+    scheme_id: icici-nifty-bank
+    topic: fund_management
+    allowed_for_citation: true
+
+  - id: icici-nifty-smallcap-250-amc-product-page
+    url: https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-smallcap-250-index-fund/1828
+    doc_type: amc_product_page
+    scheme_id: icici-nifty-smallcap-250
+    topic: fund_management
+    allowed_for_citation: true

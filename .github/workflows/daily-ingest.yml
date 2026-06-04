@@ -1,0 +1,38 @@
+# Production corpus refresh: 10:00 IST → POST /internal/ingest on Railway API (Chroma volume).
+# See docs/ingest-schedule.md
+name: Daily corpus refresh (10:00 IST)
+
+on:
+  schedule:
+    # 04:30 UTC = 10:00 IST (UTC+5:30, no DST)
+    - cron: "30 4 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: daily-ingest
+  cancel-in-progress: false
+
+jobs:
+  trigger-railway-ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    permissions:
+      contents: read
+
+    steps:
+      - name: Trigger ingest on Railway API
+        env:
+          RAILWAY_API_BASE_URL: ${{ secrets.RAILWAY_API_BASE_URL }}
+          INGEST_TRIGGER_SECRET: ${{ secrets.INGEST_TRIGGER_SECRET }}
+        run: |
+          set -euo pipefail
+          if [ -z "${RAILWAY_API_BASE_URL:-}" ] || [ -z "${INGEST_TRIGGER_SECRET:-}" ]; then
+            echo "::error::Set repository secrets RAILWAY_API_BASE_URL and INGEST_TRIGGER_SECRET (see docs/ingest-schedule.md)"
+            exit 1
+          fi
+          BASE="${RAILWAY_API_BASE_URL%/}"
+          URL="${BASE}/internal/ingest"
+          echo "POST ${URL}"
+          curl -sfS --max-time 7200 -X POST "${URL}" \
+            -H "Authorization: Bearer ${INGEST_TRIGGER_SECRET}" \
+            -H "Content-Type: application/json"

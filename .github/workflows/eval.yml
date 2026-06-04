@@ -1,0 +1,33 @@
+# Phase 5 — golden eval in CI (mocked LLM/retriever; no Groq cost)
+name: Golden eval
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-phase2.txt
+
+      - name: Unit tests (Phase 5)
+        run: pytest tests/test_phase5_ops.py -q
+
+      - name: Golden eval (mock)
+        run: python tests/eval/run_eval.py --suite all --mock

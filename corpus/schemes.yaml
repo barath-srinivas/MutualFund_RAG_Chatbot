@@ -1,0 +1,119 @@
+# ICICI Prudential — 10 in-scope schemes (source of truth: docs/MF_URL.md)
+# Only www.icicipruamc.com product pages are ingested and cited.
+# Alias policy and resolution rules: docs/scheme-aliases.md
+
+amc: ICICI Prudential Mutual Fund
+
+schemes:
+  - scheme_id: icici-large-cap
+    display_name: ICICI Prudential Large Cap Fund Direct Growth
+    category: Equity · Large Cap
+    groww_slug: icici-prudential-large-cap-fund-direct-growth
+    aliases:
+      - Large Cap Fund
+      - ICICI Large Cap
+      - large cap
+      - largecap fund
+
+  - scheme_id: icici-manufacturing
+    display_name: ICICI Prudential Manufacturing Fund Direct Growth
+    category: Equity · Sectoral
+    groww_slug: icici-prudential-manufacturing-fund-direct-growth
+    aliases:
+      - Manufacturing Fund
+      - ICICI Manufacturing
+      - manufacturing
+      - manufacturing fund
+
+  - scheme_id: icici-phd
+    display_name: ICICI Prudential Pharma Healthcare and Diagnostics (P.H.D) Fund Direct Growth
+    category: Equity · Sectoral
+    groww_slug: icici-prudential-pharma-healthcare-and-diagnostics-(p.h.d)-fund-direct-growth
+    aliases:
+      - PHD Fund
+      - PHD
+      - P.H.D Fund
+      - P.H.D
+      - Pharma Healthcare and Diagnostics
+      - Pharma fund
+      - PHD fund
+
+  - scheme_id: icici-us-bluechip
+    display_name: ICICI Prudential US Bluechip Equity Fund Direct Growth
+    category: Equity · International
+    groww_slug: icici-prudential-us-bluechip-equity-fund-direct-growth
+    aliases:
+      - US Bluechip
+      - US Bluechip Equity Fund
+      - Bluechip Equity Fund
+      - us bluechip
+      - us bluechip fund
+
+  - scheme_id: icici-multi-asset
+    display_name: ICICI Prudential Multi Asset Fund Direct Growth
+    category: Hybrid · Multi Asset Allocation
+    groww_slug: icici-prudential-dynamic-plan-direct-growth
+    aliases:
+      - Multi Asset Fund
+      - Multi Asset
+      - Dynamic Plan
+      - ICICI Prudential Dynamic Plan
+      - multi asset fund
+      - dynamic plan fund
+
+  - scheme_id: icici-nifty-auto
+    display_name: ICICI Prudential Nifty Auto Index Fund Direct Growth
+    category: Equity · Thematic
+    groww_slug: icici-prudential-nifty-auto-index-fund-direct-growth
+    aliases:
+      - Nifty Auto Index
+      - Auto Index Fund
+      - auto index
+      - nifty auto
+      - nifty auto index
+
+  - scheme_id: icici-nifty-50
+    display_name: ICICI Prudential Nifty 50 Index Direct Plan Growth
+    category: Equity · Large Cap
+    groww_slug: icici-prudential-nifty-index-fund-direct-growth
+    aliases:
+      - Nifty 50 Index
+      - Nifty 50
+      - Nifty index fund
+      - nifty 50 index
+      - nifty50
+
+  - scheme_id: icici-nifty-500
+    display_name: ICICI Prudential Nifty 500 Index Fund Direct Growth
+    category: Equity · Large Cap
+    groww_slug: icici-prudential-nifty-500-index-fund-direct-growth
+    aliases:
+      - Nifty 500 Index
+      - Nifty 500
+      - nifty 500 index
+      - nifty500
+
+  - scheme_id: icici-nifty-bank
+    display_name: ICICI Prudential Nifty Bank Index Fund Direct Growth
+    category: Equity · Sectoral
+    groww_slug: icici-prudential-nifty-bank-index-fund-direct-growth
+    aliases:
+      - Nifty Bank Index
+      - Bank Index Fund
+      - bank index
+      - Nifty Bank
+      - banking index fund
+
+  - scheme_id: icici-nifty-smallcap-250
+    display_name: ICICI Prudential Nifty Smallcap 250 Index Fund Direct Growth
+    category: Equity · Small Cap
+    groww_slug: icici-prudential-nifty-smallcap-250-index-fund-direct-growth
+    aliases:
+      - Nifty Smallcap 250
+      - Smallcap 250 Index
+      - ICICI small cap fund
+      - smallcap 250
+      - small cap 250
+      - nifty smallcap
+      - nifty smallcap 250
+      - smallcap index

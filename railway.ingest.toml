@@ -1,0 +1,10 @@
+# Cron trigger service — 10:00 IST; calls API POST /internal/ingest (no volume needed)
+# Dashboard: New Service → same repo → Settings → Config file path: railway.ingest.toml
+
+[build]
+buildCommand = "echo 'cron trigger — no build deps'"
+
+[deploy]
+startCommand = "bash scripts/railway_cron_trigger.sh"
+cronSchedule = "30 4 * * *"
+restartPolicyType = "NEVER"

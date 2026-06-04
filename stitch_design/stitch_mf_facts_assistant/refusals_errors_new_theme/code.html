@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MF Facts Assistant</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "primary-fixed": "#6dfad2",
+                "on-secondary-container": "#5d6466",
+                "primary-fixed-dim": "#4bddb7",
+                "on-tertiary-fixed": "#1a0063",
+                "on-tertiary-container": "#38248e",
+                "secondary-container": "#dae1e3",
+                "outline": "#6c7a74",
+                "surface-tint": "#006b55",
+                "on-primary-fixed": "#002018",
+                "on-secondary": "#ffffff",
+                "inverse-surface": "#2e3134",
+                "on-secondary-fixed-variant": "#41484a",
+                "on-background": "#191c1f",
+                "error": "#ba1a1a",
+                "inverse-on-surface": "#eff1f5",
+                "surface-container-lowest": "#ffffff",
+                "outline-variant": "#bbcac3",
+                "on-tertiary": "#ffffff",
+                "on-surface": "#191c1f",
+                "surface-container-high": "#e7e8ec",
+                "secondary": "#586062",
+                "tertiary-fixed-dim": "#c9bfff",
+                "on-error-container": "#93000a",
+                "error-container": "#ffdad6",
+                "surface": "#f8f9fd",
+                "surface-dim": "#d9dade",
+                "tertiary-fixed": "#e5deff",
+                "tertiary": "#5e4eb6",
+                "surface-variant": "#e1e2e6",
+                "surface-container": "#edeef2",
+                "background": "#f8f9fd",
+                "primary": "#006b55",
+                "tertiary-container": "#a494ff",
+                "secondary-fixed": "#dde4e6",
+                "inverse-primary": "#4bddb7",
+                "on-primary-fixed-variant": "#005140",
+                "on-tertiary-fixed-variant": "#46359c",
+                "surface-container-highest": "#e1e2e6",
+                "primary-container": "#00b894",
+                "on-error": "#ffffff",
+                "on-primary": "#ffffff",
+                "surface-container-low": "#f2f3f7",
+                "surface-bright": "#f8f9fd",
+                "on-surface-variant": "#3c4a44",
+                "on-primary-container": "#004233",
+                "secondary-fixed-dim": "#c1c8ca",
+                "on-secondary-fixed": "#161d1f"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "md": "16px",
+                "margin-desktop": "auto",
+                "base": "8px",
+                "sm": "8px",
+                "xs": "4px",
+                "margin-mobile": "16px",
+                "lg": "24px",
+                "gutter": "24px",
+                "xl": "32px",
+                "container-max": "1200px"
+        },
+        "fontFamily": {
+                "body-lg": [
+                        "Inter"
+                ],
+                "code": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Inter"
+                ],
+                "headline-md": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "body-lg": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "code": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-md": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-md": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+        .typing-indicator span {
+            animation: blink 1.4s infinite both;
+            height: 6px;
+            width: 6px;
+            background: currentColor;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 1px;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0% { opacity: 0.2; }
+            20% { opacity: 1; }
+            100% { opacity: 0.2; }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased flex flex-col h-screen overflow-hidden">
+<!-- Top AppBar Component -->
+<header class="bg-surface docked full-width top-0 border-b border-outline-variant flat no shadows z-50">
+<div class="flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto z-50">
+<div class="flex items-center gap-base">
+<span class="text-headline-md font-headline-md font-bold text-primary">MF Facts Assistant</span>
+</div>
+<nav class="hidden md:flex gap-lg">
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Schemes</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Compliance</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Fact Sheets</a>
+</nav>
+<div class="flex items-center gap-md">
+<button aria-label="shield" class="text-primary p-xs hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+</button>
+<button aria-label="info" class="text-primary p-xs hover:bg-surface-container rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Global Warning Banner -->
+<div class="bg-surface-container-high border-b border-outline-variant py-sm px-gutter flex justify-center items-center">
+<p class="text-label-md font-label-md text-on-surface-variant flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]" data-icon="policy">policy</span>
+            Facts-only. No investment advice.
+        </p>
+</div>
+<div class="flex flex-1 overflow-hidden">
+<!-- Side Navigation (Web Only) -->
+<aside class="hidden md:flex flex-col h-full p-md gap-base border-r border-outline-variant bg-surface-container-low shadow-sm w-64 flex-shrink-0 overflow-y-auto">
+<div class="mb-lg">
+<h2 class="text-headline-md font-headline-md font-bold text-primary">Funds Catalog</h2>
+<p class="text-label-md font-label-md text-on-surface-variant">10 Factual Factsheets</p>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-md p-sm bg-secondary-container text-on-secondary-container rounded-lg font-semibold Active: scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="chat">chat</span>
+<span class="text-body-md font-body-md">Chat Home</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-highest transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="trending_up">trending_up</span>
+<span class="text-body-md font-body-md">ICICI Pru Bluechip</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-highest transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<span class="text-body-md font-body-md">ICICI Pru Multi-Asset</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-highest transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="text-body-md font-body-md">Search History</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg border-t border-outline-variant">
+<button class="w-full mb-md bg-primary-container text-on-primary py-sm px-md rounded-lg text-body-md font-body-md font-medium hover:opacity-90 transition-opacity">
+                    View All Schemes
+                </button>
+<a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-highest transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="text-body-md font-body-md">Settings</span>
+</a>
+<a class="flex items-center gap-md p-sm text-on-surface-variant hover:bg-surface-variant hover:bg-surface-container-highest transition-all rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span class="text-body-md font-body-md">Compliance Info</span>
+</a>
+</div>
+</aside>
+<!-- Main Chat Area -->
+<main class="flex-1 flex flex-col relative max-w-3xl mx-auto w-full">
+<!-- Chat History Scrollable Area -->
+<div class="flex-1 overflow-y-auto p-gutter space-y-lg scroll-smooth pb-32">
+<!-- System Greeting (Fact) -->
+<div class="flex gap-md max-w-[85%]">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="robot_2">robot_2</span>
+</div>
+<div class="bg-surface-container-lowest p-md rounded-xl rounded-tl-sm border border-outline-variant shadow-[0_4px_12px_rgba(30,58,95,0.08)]">
+<p class="text-body-md font-body-md text-on-surface">Hello. I am the MF Facts Assistant. I can provide data from official scheme information documents, fact sheets, and SEBI disclosures. How may I assist you today?</p>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-md max-w-[85%] ml-auto justify-end">
+<div class="bg-primary p-md rounded-[20px] rounded-br-sm shadow-sm text-on-primary">
+<p class="text-body-md font-body-md">Should I buy the Multi Asset fund for retirement?</p>
+</div>
+</div>
+<!-- Assistant Refusal State -->
+<div class="flex gap-md max-w-[95%]">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="robot_2">robot_2</span>
+</div>
+<div class="bg-secondary-container p-md rounded-xl rounded-tl-sm border border-outline-variant shadow-[0_4px_12px_rgba(30,58,95,0.08)] flex-1">
+<div class="flex items-center gap-xs mb-sm text-on-secondary-container">
+<span class="material-symbols-outlined text-[18px]" data-icon="warning">warning</span>
+<span class="text-label-md font-label-md uppercase">Investment advice not provided</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface mb-md">
+                            I can only provide factual information from official sources. I cannot offer investment advice or recommendations. 
+                        </p>
+<p class="text-body-md font-body-md text-on-surface mb-md">
+                            I can, however, provide the stated objective, historical performance data, and risk profile for the Multi-Asset fund as outlined in its Scheme Information Document. Would you like me to retrieve that?
+                        </p>
+<div class="pt-sm border-t border-outline-variant flex justify-between items-center text-label-md font-label-md text-on-secondary-container/80">
+<span>Refusal Code: POL-01 (Advisory)</span>
+<a class="hover:underline flex items-center gap-1" href="#">SEBI Guidelines <span class="material-symbols-outlined text-[14px]" data-icon="open_in_new">open_in_new</span></a>
+</div>
+</div>
+</div>
+<!-- User Message triggering Error -->
+<div class="flex gap-md max-w-[85%] ml-auto justify-end">
+<div class="bg-primary p-md rounded-[20px] rounded-br-sm shadow-sm text-on-primary">
+<p class="text-body-md font-body-md">Okay, just show me the latest NAV for it then.</p>
+</div>
+</div>
+<!-- Error State -->
+<div class="flex gap-md max-w-[85%]">
+<div class="w-8 h-8 rounded-full bg-error-container flex items-center justify-center flex-shrink-0 text-on-error-container">
+<span class="material-symbols-outlined text-[20px]" data-icon="error">error</span>
+</div>
+<div class="bg-error-container p-md rounded-xl rounded-tl-sm border border-error/20 shadow-sm text-on-error-container flex items-start gap-sm">
+<span class="material-symbols-outlined mt-0.5" data-icon="cloud_off">cloud_off</span>
+<div>
+<p class="text-body-md font-body-md font-medium">API unreachable — check backend</p>
+<p class="text-label-md font-label-md mt-xs opacity-80">Failed to connect to NAV data service. Please try again later.</p>
+</div>
+</div>
+</div>
+<!-- User Message triggering Loading -->
+<div class="flex gap-md max-w-[85%] ml-auto justify-end">
+<div class="bg-primary p-md rounded-[20px] rounded-br-sm shadow-sm text-on-primary">
+<p class="text-body-md font-body-md">What is the expense ratio?</p>
+</div>
+</div>
+<!-- Loading State -->
+<div class="flex gap-md max-w-[85%]">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center flex-shrink-0 text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="robot_2">robot_2</span>
+</div>
+<div class="bg-surface-container-lowest py-md px-lg rounded-xl rounded-tl-sm border border-outline-variant shadow-sm flex items-center">
+<div class="typing-indicator flex items-center h-4 text-on-surface-variant">
+<span></span>
+<span></span>
+<span></span>
+</div>
+</div>
+</div>
+</div>
+<!-- Sticky Composer -->
+<div class="absolute bottom-0 left-0 w-full bg-background/80 backdrop-blur-md border-t border-outline-variant p-gutter">
+<div class="max-w-3xl mx-auto">
+<div class="relative bg-surface-container-lowest rounded-lg border border-outline-variant focus-within:border-primary focus-within:ring-1 focus-within:ring-primary transition-shadow shadow-sm flex items-end">
+<textarea class="w-full bg-transparent border-none focus:ring-0 resize-none py-md pl-md pr-[50px] min-h-[56px] max-h-[120px] text-body-md font-body-md text-on-surface placeholder:text-on-surface-variant/60" placeholder="Ask a factual question..." rows="1"></textarea>
+<button aria-label="send" class="absolute right-sm bottom-sm w-10 h-10 flex items-center justify-center bg-primary-container text-on-primary rounded-lg hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+</button>
+</div>
+<p class="text-label-md font-label-md text-center text-on-surface-variant mt-sm">
+                        Information sourced from official Scheme Information Documents.
+                    </p>
+</div>
+</div>
+</main>
+</div>
+</body></html>

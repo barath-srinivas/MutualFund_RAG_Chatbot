@@ -1,0 +1,236 @@
+version: 2
+notes: >
+  Phase 5 golden factual set — 10 schemes × 5 topics (52 cases).
+  Run: python tests/eval/run_eval.py --suite factual --mock
+
+cases:
+  # --- icici-large-cap ---
+  - id: expense-large-cap
+    scheme_id: icici-large-cap
+    question: What is the expense ratio of ICICI Prudential Large Cap Fund Direct Growth?
+    expected_topic: fees
+  - id: exit-load-large-cap
+    scheme_id: icici-large-cap
+    question: What is the exit load for ICICI Prudential Large Cap Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-large-cap
+    scheme_id: icici-large-cap
+    question: What is the minimum SIP for ICICI Prudential Large Cap Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-large-cap
+    scheme_id: icici-large-cap
+    question: What is the benchmark index for ICICI Prudential Large Cap Fund Direct Growth?
+    expected_topic: benchmark
+  - id: manager-large-cap
+    scheme_id: icici-large-cap
+    question: Who manages ICICI Prudential Large Cap Fund Direct Growth?
+    expected_topic: fund_management
+
+  # --- icici-manufacturing ---
+  - id: expense-manufacturing
+    scheme_id: icici-manufacturing
+    question: What is the expense ratio of ICICI Prudential Manufacturing Fund Direct Growth?
+    expected_topic: fees
+  - id: exit-load-manufacturing
+    scheme_id: icici-manufacturing
+    question: What is the exit load for ICICI Prudential Manufacturing Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-manufacturing
+    scheme_id: icici-manufacturing
+    question: What is the minimum SIP for ICICI Prudential Manufacturing Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-manufacturing
+    scheme_id: icici-manufacturing
+    question: What is the benchmark for ICICI Prudential Manufacturing Fund Direct Growth?
+    expected_topic: benchmark
+  - id: manager-manufacturing
+    scheme_id: icici-manufacturing
+    question: Who is the fund manager of ICICI Prudential Manufacturing Fund?
+    expected_topic: fund_management
+
+  # --- icici-phd ---
+  - id: expense-phd
+    scheme_id: icici-phd
+    question: What is the expense ratio of ICICI Prudential Pharma Healthcare and Diagnostics (P.H.D) Fund Direct Growth?
+    expected_topic: fees
+  - id: exit-load-phd
+    scheme_id: icici-phd
+    question: What is the exit load for ICICI Prudential PHD Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-phd
+    scheme_id: icici-phd
+    question: What is the minimum SIP for ICICI Prudential PHD Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-phd
+    scheme_id: icici-phd
+    question: What is the benchmark index for ICICI Prudential PHD Fund Direct Growth?
+    expected_topic: benchmark
+  - id: manager-phd
+    scheme_id: icici-phd
+    question: Who manages ICICI Prudential PHD Fund Direct Growth?
+    expected_topic: fund_management
+
+  # --- icici-us-bluechip ---
+  - id: expense-us-bluechip
+    scheme_id: icici-us-bluechip
+    question: What is the expense ratio of ICICI Prudential US Bluechip Equity Fund Direct Growth?
+    expected_topic: fees
+  - id: exit-load-us-bluechip
+    scheme_id: icici-us-bluechip
+    question: What is the exit load for ICICI Prudential US Bluechip Equity Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-us-bluechip
+    scheme_id: icici-us-bluechip
+    question: What is the minimum SIP for ICICI Prudential US Bluechip Equity Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-us-bluechip
+    scheme_id: icici-us-bluechip
+    question: What is the benchmark for ICICI Prudential US Bluechip Equity Fund Direct Growth?
+    expected_topic: benchmark
+  - id: manager-us-bluechip
+    scheme_id: icici-us-bluechip
+    question: Who manages ICICI Prudential US Bluechip Equity Fund Direct Growth?
+    expected_topic: fund_management
+
+  # --- icici-multi-asset ---
+  - id: expense-multi-asset
+    scheme_id: icici-multi-asset
+    question: What is the expense ratio of ICICI Prudential Multi Asset Fund Direct Growth?
+    expected_topic: fees
+  - id: exit-load-multi-asset
+    scheme_id: icici-multi-asset
+    question: What is the exit load for ICICI Prudential Multi Asset Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-multi-asset
+    scheme_id: icici-multi-asset
+    question: What is the minimum SIP for ICICI Prudential Multi Asset Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-multi-asset
+    scheme_id: icici-multi-asset
+    question: What is the benchmark for ICICI Prudential Multi Asset Fund Direct Growth?
+    expected_topic: benchmark
+  - id: manager-multi-asset
+    scheme_id: icici-multi-asset
+    question: Who manages ICICI Prudential Multi Asset Fund Direct Growth?
+    expected_topic: fund_management
+
+  # --- icici-nifty-auto (index) ---
+  - id: expense-nifty-auto
+    scheme_id: icici-nifty-auto
+    question: What is the expense ratio of ICICI Prudential Nifty Auto Index Fund Direct Growth?
+    expected_topic: fees
+  - id: exit-load-nifty-auto
+    scheme_id: icici-nifty-auto
+    question: What is the exit load for ICICI Prudential Nifty Auto Index Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-nifty-auto
+    scheme_id: icici-nifty-auto
+    question: What is the minimum SIP for ICICI Prudential Nifty Auto Index Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-nifty-auto
+    scheme_id: icici-nifty-auto
+    question: What is the benchmark index for ICICI Prudential Nifty Auto Index Fund Direct Growth?
+    expected_topic: benchmark
+  - id: mandate-nifty-auto
+    scheme_id: icici-nifty-auto
+    question: Who manages ICICI Prudential Nifty Auto Index Fund Direct Growth?
+    expected_topic: index_mandate
+
+  # --- icici-nifty-50 (index) ---
+  - id: expense-nifty-50
+    scheme_id: icici-nifty-50
+    question: What is the expense ratio of ICICI Prudential Nifty 50 Index Direct Plan Growth?
+    expected_topic: fees
+  - id: exit-load-nifty-50
+    scheme_id: icici-nifty-50
+    question: What is the exit load for ICICI Prudential Nifty 50 Index Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-nifty-50
+    scheme_id: icici-nifty-50
+    question: What is the minimum SIP for ICICI Prudential Nifty 50 Index Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-nifty-50
+    scheme_id: icici-nifty-50
+    question: What is the benchmark for ICICI Prudential Nifty 50 Index Fund Direct Growth?
+    expected_topic: benchmark
+  - id: mandate-nifty-50
+    scheme_id: icici-nifty-50
+    question: Who manages ICICI Prudential Nifty 50 Index Fund?
+    expected_topic: index_mandate
+
+  # --- icici-nifty-500 (index) ---
+  - id: expense-nifty-500
+    scheme_id: icici-nifty-500
+    question: What is the expense ratio of ICICI Prudential Nifty 500 Index Fund Direct Growth?
+    expected_topic: fees
+  - id: exit-load-nifty-500
+    scheme_id: icici-nifty-500
+    question: What is the exit load for ICICI Prudential Nifty 500 Index Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-nifty-500
+    scheme_id: icici-nifty-500
+    question: What is the minimum SIP for ICICI Prudential Nifty 500 Index Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-nifty-500
+    scheme_id: icici-nifty-500
+    question: What is the benchmark index for ICICI Prudential Nifty 500 Index Fund Direct Growth?
+    expected_topic: benchmark
+  - id: mandate-nifty-500
+    scheme_id: icici-nifty-500
+    question: Who manages ICICI Prudential Nifty 500 Index Fund Direct Growth?
+    expected_topic: index_mandate
+
+  # --- icici-nifty-bank (index) ---
+  - id: expense-nifty-bank
+    scheme_id: icici-nifty-bank
+    question: What is the expense ratio of ICICI Prudential Nifty Bank Index Fund Direct Growth?
+    expected_topic: fees
+  - id: exit-load-nifty-bank
+    scheme_id: icici-nifty-bank
+    question: What is the exit load for ICICI Prudential Nifty Bank Index Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-nifty-bank
+    scheme_id: icici-nifty-bank
+    question: What is the minimum SIP for ICICI Prudential Nifty Bank Index Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-nifty-bank
+    scheme_id: icici-nifty-bank
+    question: What is the benchmark for ICICI Prudential Nifty Bank Index Fund Direct Growth?
+    expected_topic: benchmark
+  - id: mandate-nifty-bank
+    scheme_id: icici-nifty-bank
+    question: Who manages ICICI Prudential Nifty Bank Index Fund Direct Growth?
+    expected_topic: index_mandate
+
+  # --- icici-nifty-smallcap-250 (index) ---
+  - id: expense-smallcap-250
+    scheme_id: icici-nifty-smallcap-250
+    question: What is the expense ratio of ICICI Prudential Nifty Smallcap 250 Index Fund Direct Growth?
+    expected_topic: fees
+  - id: exit-load-smallcap-250
+    scheme_id: icici-nifty-smallcap-250
+    question: What is the exit load for ICICI Prudential Nifty Smallcap 250 Index Fund Direct Growth?
+    expected_topic: exit_load
+  - id: sip-smallcap-250
+    scheme_id: icici-nifty-smallcap-250
+    question: What is the minimum SIP for ICICI Prudential Nifty Smallcap 250 Index Fund Direct Growth?
+    expected_topic: sip
+  - id: benchmark-smallcap-250
+    scheme_id: icici-nifty-smallcap-250
+    question: What is the benchmark index for ICICI Prudential Nifty Smallcap 250 Index Fund Direct Growth?
+    expected_topic: benchmark
+  - id: mandate-smallcap-250
+    scheme_id: icici-nifty-smallcap-250
+    question: Who manages ICICI Prudential Nifty Smallcap 250 Index Fund Direct Growth?
+    expected_topic: index_mandate
+
+  # --- shared operational ---
+  - id: riskometer-large-cap
+    scheme_id: icici-large-cap
+    question: What is the riskometer classification for ICICI Prudential Large Cap Fund Direct Growth?
+    expected_topic: riskometer
+
+  - id: riskometer-phd
+    scheme_id: icici-phd
+    question: What is the riskometer for ICICI Prudential PHD Fund Direct Growth?
+    expected_topic: riskometer

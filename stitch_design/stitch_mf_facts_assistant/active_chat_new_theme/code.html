@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MF Facts Assistant</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 20px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+    </style>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "primary-fixed": "#6dfad2",
+                "on-secondary-container": "#5d6466",
+                "primary-fixed-dim": "#4bddb7",
+                "on-tertiary-fixed": "#1a0063",
+                "on-tertiary-container": "#38248e",
+                "secondary-container": "#dae1e3",
+                "outline": "#6c7a74",
+                "surface-tint": "#006b55",
+                "on-primary-fixed": "#002018",
+                "on-secondary": "#ffffff",
+                "inverse-surface": "#2e3134",
+                "on-secondary-fixed-variant": "#41484a",
+                "on-background": "#191c1f",
+                "error": "#ba1a1a",
+                "inverse-on-surface": "#eff1f5",
+                "surface-container-lowest": "#ffffff",
+                "outline-variant": "#bbcac3",
+                "on-tertiary": "#ffffff",
+                "on-surface": "#191c1f",
+                "surface-container-high": "#e7e8ec",
+                "secondary": "#586062",
+                "tertiary-fixed-dim": "#c9bfff",
+                "on-error-container": "#93000a",
+                "error-container": "#ffdad6",
+                "surface": "#f8f9fd",
+                "surface-dim": "#d9dade",
+                "tertiary-fixed": "#e5deff",
+                "tertiary": "#5e4eb6",
+                "surface-variant": "#e1e2e6",
+                "surface-container": "#edeef2",
+                "background": "#f8f9fd",
+                "primary": "#006b55",
+                "tertiary-container": "#a494ff",
+                "secondary-fixed": "#dde4e6",
+                "inverse-primary": "#4bddb7",
+                "on-primary-fixed-variant": "#005140",
+                "on-tertiary-fixed-variant": "#46359c",
+                "surface-container-highest": "#e1e2e6",
+                "primary-container": "#00b894",
+                "on-error": "#ffffff",
+                "on-primary": "#ffffff",
+                "surface-container-low": "#f2f3f7",
+                "surface-bright": "#f8f9fd",
+                "on-surface-variant": "#3c4a44",
+                "on-primary-container": "#004233",
+                "secondary-fixed-dim": "#c1c8ca",
+                "on-secondary-fixed": "#161d1f"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+        },
+        "spacing": {
+                "md": "16px",
+                "margin-desktop": "auto",
+                "base": "8px",
+                "sm": "8px",
+                "xs": "4px",
+                "margin-mobile": "16px",
+                "lg": "24px",
+                "gutter": "24px",
+                "xl": "32px",
+                "container-max": "1200px"
+        },
+        "fontFamily": {
+                "body-lg": [
+                        "Inter"
+                ],
+                "code": [
+                        "Inter"
+                ],
+                "label-md": [
+                        "Inter"
+                ],
+                "body-md": [
+                        "Inter"
+                ],
+                "headline-lg-mobile": [
+                        "Inter"
+                ],
+                "headline-md": [
+                        "Inter"
+                ],
+                "headline-lg": [
+                        "Inter"
+                ],
+                "metadata": ["Inter"],
+                "body-sm": ["Inter"],
+                "label-caps": ["Inter"]
+        },
+        "fontSize": {
+                "body-lg": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "code": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "label-md": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "600"
+                        }
+                ],
+                "body-md": [
+                        "14px",
+                        {
+                                "lineHeight": "20px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "headline-lg-mobile": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "letterSpacing": "-0.01em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-md": [
+                        "20px",
+                        {
+                                "lineHeight": "28px",
+                                "fontWeight": "600"
+                        }
+                ],
+                "headline-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "metadata": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }],
+                "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                "label-caps": ["11px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }]
+        }
+},
+    },
+  }
+</script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<!-- Top AppBar (Generated from JSON) -->
+<header class="bg-surface text-primary border-b border-outline-variant flex justify-between items-center w-full px-lg py-md max-w-container-max mx-auto z-50 docked full-width top-0 sticky">
+<div class="flex items-center gap-md">
+<span class="text-headline-md font-headline-md font-bold text-primary">MF Facts Assistant</span>
+</div>
+<nav class="hidden md:flex gap-lg">
+<a class="text-secondary border-b-2 border-secondary font-bold hover:text-secondary transition-colors duration-200" href="#">Schemes</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Compliance</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200" href="#">Fact Sheets</a>
+</nav>
+<div class="flex items-center gap-sm">
+<button aria-label="shield" class="p-2 rounded-full hover:bg-surface-variant transition-colors flex items-center justify-center text-on-surface-variant hover:text-secondary">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+</button>
+<button aria-label="info" class="p-2 rounded-full hover:bg-surface-variant transition-colors flex items-center justify-center text-on-surface-variant hover:text-secondary">
+<span class="material-symbols-outlined" data-icon="info">info</span>
+</button>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden max-w-container-max mx-auto w-full relative">
+<!-- SideNav (Generated from JSON) -->
+<aside class="bg-surface-container-low text-primary hidden md:flex flex-col h-full p-md gap-base border-r border-outline-variant w-64 shadow-sm flex-shrink-0 relative">
+<div class="mb-lg px-2">
+<h2 class="text-headline-md font-headline-md font-bold text-primary">Funds Catalog</h2>
+<p class="text-metadata font-metadata text-on-surface-variant mt-1">10 Factual Factsheets</p>
+</div>
+<nav class="flex-1 flex flex-col gap-sm overflow-y-auto">
+<a class="bg-secondary-container text-on-secondary-container rounded-lg font-semibold flex items-center gap-md p-2 hover:bg-surface-container-highest transition-all scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="chat">chat</span>
+<span class="text-body-sm font-body-sm">Chat Home</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg flex items-center gap-md p-2 transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="trending_up">trending_up</span>
+<span class="text-body-sm font-body-sm">ICICI Pru Bluechip</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg flex items-center gap-md p-2 transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="account_balance">account_balance</span>
+<span class="text-body-sm font-body-sm">ICICI Pru Multi-Asset</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg flex items-center gap-md p-2 transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="history">history</span>
+<span class="text-body-sm font-body-sm">Search History</span>
+</a>
+</nav>
+<div class="mt-auto pt-lg flex flex-col gap-sm border-t border-outline-variant">
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg flex items-center gap-md p-2 transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="settings">settings</span>
+<span class="text-body-sm font-body-sm">Settings</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-variant rounded-lg flex items-center gap-md p-2 transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]" data-icon="gavel">gavel</span>
+<span class="text-body-sm font-body-sm">Compliance Info</span>
+</a>
+</div>
+<button class="mt-md w-full py-2 bg-primary text-on-primary rounded-lg text-body-sm font-body-sm font-medium hover:bg-primary-container transition-colors shadow-[0_4px_12px_rgba(0,107,85,0.08)]">View All Schemes</button>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col bg-surface relative overflow-hidden h-[calc(100vh-73px)]"> <!-- Height calc for top app bar -->
+<!-- Sticky Warning Banner -->
+<div class="bg-error-container text-on-error-container py-2 px-md flex items-center justify-center gap-sm shrink-0 border-b border-outline-variant sticky top-0 z-10 shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="warning">warning</span>
+<span class="text-metadata font-metadata font-semibold uppercase tracking-wider">Facts-only. No investment advice.</span>
+</div>
+<!-- Chat Canvas -->
+<div class="flex-1 overflow-y-auto p-md md:p-lg flex flex-col gap-xl scroll-smooth" id="chat-canvas">
+<!-- Date Separator -->
+<div class="flex justify-center">
+<span class="text-metadata font-metadata text-on-surface-variant bg-surface-container px-3 py-1 rounded-full">Today</span>
+</div>
+<!-- User Message 1 -->
+<div class="flex justify-end w-full">
+<div class="bg-primary text-on-primary rounded-[20px] rounded-br-sm px-lg py-md max-w-[85%] md:max-w-[70%] shadow-[0_4px_12px_rgba(0,107,85,0.08)]">
+<p class="text-body-md font-body-md">What is the expense ratio for the ICICI Prudential Large Cap Fund?</p>
+</div>
+</div>
+<!-- Assistant Message 1 (Prose) -->
+<div class="flex justify-start w-full">
+<div class="bg-surface-container-lowest text-primary border border-outline-variant rounded-xl rounded-bl-sm p-md max-w-[90%] md:max-w-[75%] shadow-[0_4px_12px_rgba(0,107,85,0.08)] relative">
+<div class="flex items-center gap-2 mb-2 text-secondary">
+<span class="material-symbols-outlined text-[18px]" data-icon="neurology">neurology</span>
+<span class="text-label-caps font-label-caps font-bold">MF FACTS ASSISTANT</span>
+</div>
+<p class="text-body-md font-body-md text-on-surface mb-3 leading-relaxed">
+                            The current Total Expense Ratio (TER) for the ICICI Prudential Large Cap Fund - Direct Plan is 0.98% as of the latest disclosure. For the Regular Plan, the TER is 1.65%. These figures are subject to periodic regulatory updates by SEBI.
+                        </p>
+<div class="mt-4 pt-3 border-t border-surface-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+<a class="flex items-center gap-1 text-secondary hover:underline text-metadata font-metadata group" href="#">
+<span class="material-symbols-outlined text-[14px]" data-icon="open_in_new">open_in_new</span>
+                                Official AMC Document
+                            </a>
+<span class="text-metadata font-metadata text-on-surface-variant">Last updated from sources: 2024-05-15</span>
+</div>
+</div>
+</div>
+<!-- User Message 2 -->
+<div class="flex justify-end w-full">
+<div class="bg-primary text-on-primary rounded-[20px] rounded-br-sm px-lg py-md max-w-[85%] md:max-w-[70%] shadow-[0_4px_12px_rgba(0,107,85,0.08)]">
+<p class="text-body-md font-body-md">Compare exit loads for all schemes.</p>
+</div>
+</div>
+<!-- Assistant Message 2 (Table) -->
+<div class="flex justify-start w-full">
+<div class="bg-surface-container-lowest text-primary border border-outline-variant rounded-xl rounded-bl-sm p-md max-w-[95%] md:max-w-[85%] shadow-[0_4px_12px_rgba(0,107,85,0.08)]">
+<div class="flex items-center gap-2 mb-3 text-secondary">
+<span class="material-symbols-outlined text-[18px]" data-icon="table_chart">table_chart</span>
+<span class="text-label-caps font-label-caps font-bold">DATA SUMMARY</span>
+</div>
+<div class="overflow-x-auto rounded-lg border border-surface-variant mb-4">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-high text-on-surface text-label-caps font-label-caps uppercase">
+<tr>
+<th class="py-3 px-4 border-b border-surface-variant">Scheme Name</th>
+<th class="py-3 px-4 border-b border-surface-variant">TER (Direct)</th>
+<th class="py-3 px-4 border-b border-surface-variant">Exit Load</th>
+</tr>
+</thead>
+<tbody class="text-body-sm font-body-sm text-on-surface divide-y divide-surface-variant">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-medium text-primary">ICICI Pru Large Cap Fund</td>
+<td class="py-3 px-4">0.98%</td>
+<td class="py-3 px-4">1% if redeemed within 1 year</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-medium text-primary">ICICI Pru Multi-Asset Fund</td>
+<td class="py-3 px-4">1.12%</td>
+<td class="py-3 px-4">1% for redemption &gt; 30% within 1 yr</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="py-3 px-4 font-medium text-primary">ICICI Pru Liquid Fund</td>
+<td class="py-3 px-4">0.25%</td>
+<td class="py-3 px-4">Nil (subject to SEBI slabs)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pt-3 border-t border-surface-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+<a class="flex items-center gap-1 text-secondary hover:underline text-metadata font-metadata" href="#">
+<span class="material-symbols-outlined text-[14px]" data-icon="description">description</span>
+                                View Detailed SEBI Disclosures
+                            </a>
+<span class="text-metadata font-metadata text-on-surface-variant">Data accurate as of 2024-05-15</span>
+</div>
+</div>
+</div>
+<!-- Extra space for bottom padding so content isn't hidden behind composer -->
+<div class="h-4"></div>
+</div>
+<!-- Sticky Composer -->
+<div class="bg-surface border-t border-outline-variant p-md md:p-lg shrink-0 z-20">
+<div class="max-w-3xl mx-auto">
+<form class="relative flex items-center" onsubmit="event.preventDefault();">
+<button class="absolute left-3 text-on-surface-variant hover:text-secondary p-1 rounded-full transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-secondary/50" type="button">
+<span class="material-symbols-outlined" data-icon="attach_file">attach_file</span>
+</button>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg py-3 pl-12 pr-14 text-body-md font-body-md text-on-surface placeholder:text-on-surface-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-shadow shadow-sm" placeholder="Ask a factual question about ICICI Prudential schemes..." type="text"/>
+<button class="absolute right-2 bg-primary text-on-primary p-2 rounded-md hover:bg-primary-container transition-colors flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary/50 shadow-sm" type="submit">
+<span class="material-symbols-outlined text-[20px]" data-icon="send">send</span>
+</button>
+</form>
+<div class="text-center mt-2">
+<span class="text-metadata font-metadata text-on-surface-variant">Assistant relies on official Scheme Information Documents.</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Footer (Generated from JSON) -->
+<footer class="bg-surface-container-lowest text-on-surface-variant border-t border-outline-variant w-full py-lg flex flex-col md:flex-row justify-between items-center px-lg max-w-container-max mx-auto flat no shadows z-50">
+<span class="text-label-caps font-label-caps text-primary">MF Facts Assistant</span>
+<div class="flex gap-md mt-4 md:mt-0">
+<a class="text-on-surface-variant hover:text-secondary transition-colors text-metadata font-metadata" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors text-metadata font-metadata" href="#">SEBI Disclosures</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors text-metadata font-metadata" href="#">Privacy Policy</a>
+</div>
+<div class="mt-4 md:mt-0 text-metadata font-metadata">
+            © 2024 MF Facts Assistant. For informational purposes only.
+        </div>
+</footer>
+<script>
+        // Auto-scroll chat to bottom on load
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatCanvas = document.getElementById('chat-canvas');
+            chatCanvas.scrollTop = chatCanvas.scrollHeight;
+        });
+    </script>
+</body></html>

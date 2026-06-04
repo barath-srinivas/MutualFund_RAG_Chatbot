@@ -1,0 +1,11 @@
+# API service — long-running FastAPI (attach Chroma volume at /app/data)
+# Dashboard: set Config file path to railway.toml (default)
+
+[build]
+buildCommand = "pip install -r requirements.txt -r requirements-phase1.txt -r requirements-phase2.txt && pip install certifi && playwright install chromium && playwright install-deps chromium"
+
+[deploy]
+startCommand = "uvicorn src.main:app --host :: --port ${PORT}"
+healthcheckPath = "/health"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"

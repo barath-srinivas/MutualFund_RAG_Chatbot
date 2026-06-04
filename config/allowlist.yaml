@@ -1,0 +1,10 @@
+# Official citation domains (Phase 0). Override via ALLOWED_DOMAINS env (comma-separated).
+domains:
+  - icicipruamc.com
+  - www.icicipruamc.com
+  - digitalfactsheet.icicipruamc.com
+  - investor.sebi.gov.in
+  - amfiindia.com
+  - www.amfiindia.com
+  - sebi.gov.in
+  - www.sebi.gov.in

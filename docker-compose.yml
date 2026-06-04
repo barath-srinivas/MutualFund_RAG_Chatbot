@@ -1,0 +1,15 @@
+# Phase 5 — local API + persistent Chroma volume
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      VECTOR_DB_PATH: /app/data/chroma
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
+    volumes:
+      - ./data:/app/data
+      - ./corpus:/app/corpus:ro
+    restart: unless-stopped
