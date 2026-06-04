@@ -8,7 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt requirements-phase1.txt requirements-phase2.txt ./
-RUN pip install --no-cache-dir -r requirements.txt -r requirements-phase1.txt -r requirements-phase2.txt
+RUN pip install --no-cache-dir -r requirements.txt -r requirements-phase1.txt -r requirements-phase2.txt \
+    && playwright install chromium \
+    && playwright install-deps chromium
 
 COPY corpus/ corpus/
 COPY config/ config/
