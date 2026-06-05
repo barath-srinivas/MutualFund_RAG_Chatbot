@@ -58,6 +58,8 @@ def parse_amc_product_bundle(content: bytes) -> dict[str, Any]:
     if not holdings_text:
         holdings_tab = tab_sections.get("Holdings") if isinstance(tab_sections, dict) else None
         holdings_text = _flatten_holdings_tab(str(holdings_tab or ""))
+    if not holdings_text:
+        holdings_text = _flatten_holdings_tab(page_text)
     if holdings_text:
         sections.append(
             {

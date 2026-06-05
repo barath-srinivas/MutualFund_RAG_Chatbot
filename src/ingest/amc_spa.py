@@ -152,7 +152,6 @@ def fetch_amc_product_page(url: str, *, timeout_ms: int = 120_000) -> AmcSpaPayl
         page.wait_for_timeout(2000)
 
         _dismiss_overlays(page)
-        tab_sections = _expand_product_tabs(page, warnings)
 
         if fund_api is None:
             fund_api = _fetch_json_via_request(
@@ -165,9 +164,13 @@ def fetch_amc_product_page(url: str, *, timeout_ms: int = 120_000) -> AmcSpaPayl
         scheme_code = resolve_direct_growth_scheme_code(fund_api)
         if scheme_code:
             _fetch_scheme_apis_via_request(page, scheme_code, extra_apis, warnings)
-            if "portfolio_holdings" not in extra_apis:
-                _capture_holdings_via_tab(page, scheme_code, extra_apis, tab_sections, warnings)
 
+        tab_sections = _expand_product_tabs(page, warnings)
+
+        if scheme_code and "portfolio_holdings" not in extra_apis:
+            _capture_holdings_via_tab(page, scheme_code, extra_apis, tab_sections, warnings)
+
+        _snapshot_holdings_tab_text(page, tab_sections, warnings)
         page_text = page.inner_text("body")
         browser.close()
 
@@ -192,6 +195,37 @@ def fetch_amc_product_page(url: str, *, timeout_ms: int = 120_000) -> AmcSpaPayl
     )
 
 
+def _holdings_tab_control(page: Any) -> Any | None:
+    control = page.get_by_role("tab", name="Holdings")
+    if control.count() == 0:
+        control = page.get_by_text("Holdings", exact=True)
+    if control.count() == 0:
+        return None
+    tab = control.first
+    if not tab.is_visible(timeout=3000):
+        return None
+    return tab
+
+
+def _snapshot_holdings_tab_text(
+    page: Any,
+    tab_sections: dict[str, str],
+    warnings: list[str],
+) -> None:
+    """Re-open Holdings so tab_sections captures weights/names (not Sectors-active chrome)."""
+    try:
+        tab = _holdings_tab_control(page)
+        if tab is None:
+            return
+        tab.click(timeout=8000)
+        page.wait_for_timeout(2000)
+        snippet = _extract_fund_panel_text(page)
+        if snippet.strip():
+            tab_sections["Holdings"] = snippet.strip()
+    except Exception as exc:
+        warnings.append(f"Holdings tab text snapshot failed: {exc}")
+
+
 def _capture_holdings_via_tab(
     page: Any,
     scheme_code: str,
@@ -201,27 +235,27 @@ def _capture_holdings_via_tab(
 ) -> None:
     """Click Holdings and wait for portfolio?type=HL when direct API fetch failed."""
     try:
-        control = page.get_by_role("tab", name="Holdings")
-        if control.count() == 0:
-            control = page.get_by_text("Holdings", exact=True)
-        tab = control.first
-        if not tab.is_visible(timeout=3000):
+        tab = _holdings_tab_control(page)
+        if tab is None:
             return
-        with page.expect_response(
-            lambda r: "/portfolio?type=HL" in r.url
-            and str(scheme_code) in r.url
-            and r.status == 200,
-            timeout=20_000,
-        ) as response_info:
+        try:
+            with page.expect_response(
+                lambda r: "/portfolio?type=HL" in r.url
+                and str(scheme_code) in r.url
+                and r.status == 200,
+                timeout=20_000,
+            ) as response_info:
+                tab.click(timeout=8000)
+            extra_apis["portfolio_holdings"] = response_info.value.json()
+        except Exception as api_exc:
+            warnings.append(f"Holdings tab API capture failed: {api_exc}")
             tab.click(timeout=8000)
-        payload = response_info.value.json()
-        extra_apis["portfolio_holdings"] = payload
-        page.wait_for_timeout(1000)
+        page.wait_for_timeout(1500)
         snippet = _extract_fund_panel_text(page)
         if snippet.strip():
             tab_sections["Holdings"] = snippet.strip()
     except Exception as exc:
-        warnings.append(f"Holdings tab API capture failed: {exc}")
+        warnings.append(f"Holdings tab capture failed: {exc}")
 
 
 def _expand_product_tabs(page: Any, warnings: list[str]) -> dict[str, str]:
