@@ -17,8 +17,8 @@ dist/
 build/
 *.egg-info/
 
-# Data and corpus artifacts (Phase 1+)
-data/
+# Data and corpus artifacts (Phase 1+) — /data/ is repo-root Chroma only (not frontend/src/data/)
+/data/
 corpus/raw/
 corpus/manifests/
 logs/
