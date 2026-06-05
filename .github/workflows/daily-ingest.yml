@@ -61,13 +61,15 @@ jobs:
             sleep 60
             STATUS="$(curl -sS --max-time 30 "${STATUS_URL}")"
             echo "[$attempt] ${STATUS}"
-            if echo "${STATUS}" | grep -q '"last_ingest": null'; then
+            # API returns compact JSON (no spaces); do not grep for ': null'
+            if ! echo "${STATUS}" | jq -e '.last_ingest != null' >/dev/null; then
               continue
             fi
-            if echo "${STATUS}" | grep -q '"chunk_count": 0[,}]'; then
+            CHUNKS="$(echo "${STATUS}" | jq -r '.chunk_count // 0')"
+            echo "last_ingest set, chunk_count=${CHUNKS}"
+            if [ "${CHUNKS}" -eq 0 ]; then
               echo "::warning::Ingest finished but chunk_count is 0 — check Railway logs for fetch/Playwright errors."
             fi
-            echo "Ingest completed (last_ingest present)."
             exit 0
           done
           echo "::error::Timed out waiting for ingest to finish on Railway. Check Railway logs for corpus-ingest thread."
