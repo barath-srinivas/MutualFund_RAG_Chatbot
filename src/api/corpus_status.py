@@ -21,7 +21,7 @@ def _last_ingest_path() -> Path:
 
 
 @router.get("/corpus-status")
-def corpus_status() -> dict[str, Any]:
+def corpus_status(scheme_id: str | None = None) -> dict[str, Any]:
     """Last successful ingest metadata (written to the Chroma volume)."""
     settings = get_settings()
     payload: dict[str, Any] = {
@@ -33,6 +33,20 @@ def corpus_status() -> dict[str, Any]:
     try:
         store = ChromaVectorStore()
         payload["chunk_count"] = store.count()
+        if scheme_id:
+            collection = store._connect()
+            result = collection.get(
+                where={"scheme_id": scheme_id},
+                include=["metadatas"],
+            )
+            metas = result.get("metadatas") or []
+            payload["scheme_sections"] = sorted(
+                {
+                    str(meta.get("section") or "").strip()
+                    for meta in metas
+                    if meta.get("section")
+                }
+            )
     except Exception as exc:
         logger.warning("Could not read Chroma count: %s", exc)
         payload["chunk_count_error"] = str(exc)

@@ -77,6 +77,31 @@ def test_resolve_direct_growth_scheme_code() -> None:
     assert resolve_direct_growth_scheme_code(fund_api) == "9675"
 
 
+def test_parse_bundle_uses_holdings_tab_when_api_missing() -> None:
+    holdings_tab = (
+        "Holdings\n"
+        "Top Holdings by Portfolio Weight (%)\n"
+        "HDFC Bank Ltd.\n"
+        "18.92%\n"
+        "ICICI Bank Ltd.\n"
+        "14.05%\n"
+    )
+    bundle = json.dumps(
+        {
+            "page_url": "https://www.icicipruamc.com/mutual-fund/index-funds/icici-prudential-nifty-bank-index-fund/1839",
+            "fund_id": "1839",
+            "scheme_code": "9675",
+            "page_text": "",
+            "fund_api": None,
+            "tab_sections": {"Holdings": holdings_tab},
+            "extra_apis": {"portfolio_sectors": {"success": {"data": []}}},
+        }
+    ).encode("utf-8")
+    parsed = parse_amc_product_bundle(bundle)
+    assert "HDFC Bank Ltd." in parsed["text"]
+    assert any(s.get("heading") == "Top holdings" for s in parsed["sections"])
+
+
 def test_parse_bundle_includes_top_holdings() -> None:
     fund_api = json.loads((FIXTURES / "nifty_bank_fund_api.json").read_text(encoding="utf-8"))
     holdings = json.loads((FIXTURES / "nifty_bank_holdings.json").read_text(encoding="utf-8"))

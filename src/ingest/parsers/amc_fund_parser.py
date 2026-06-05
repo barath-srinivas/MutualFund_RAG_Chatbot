@@ -55,6 +55,9 @@ def parse_amc_product_bundle(content: bytes) -> dict[str, Any]:
         )
 
     holdings_text = _flatten_portfolio_holdings(extra_apis.get("portfolio_holdings"))
+    if not holdings_text:
+        holdings_tab = tab_sections.get("Holdings") if isinstance(tab_sections, dict) else None
+        holdings_text = _flatten_holdings_tab(str(holdings_tab or ""))
     if holdings_text:
         sections.append(
             {
@@ -150,6 +153,60 @@ def parse_amc_product_bundle(content: bytes) -> dict[str, Any]:
         "sections": sections,
         "warnings": warnings,
     }
+
+
+def _flatten_holdings_tab(text: str) -> str:
+    """Parse visible Holdings tab panel when apimf portfolio?type=HL was not captured."""
+    rows = _holdings_rows_from_tab_text(text)
+    if not rows:
+        return ""
+    lines = ["Top holdings by portfolio weight (%):"]
+    for index, (name, weight) in enumerate(rows[:25], start=1):
+        lines.append(f"{index}. {name}: {weight}%")
+    return "\n".join(lines)
+
+
+def _holdings_rows_from_tab_text(text: str) -> list[tuple[str, str]]:
+    if not text.strip():
+        return []
+    rows: list[tuple[str, str]] = []
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    skip_prefixes = (
+        "holdings",
+        "top holdings",
+        "company",
+        "weight",
+        "portfolio",
+        "sector",
+        "fund manager",
+        "as on",
+    )
+    index = 0
+    while index < len(lines):
+        line = lines[index]
+        lower = line.lower()
+        if any(lower.startswith(prefix) for prefix in skip_prefixes):
+            index += 1
+            continue
+        inline = re.match(r"^(.+?)\s+([\d.]+)\s*%$", line)
+        if inline:
+            rows.append((inline.group(1).strip(), inline.group(2).strip()))
+            index += 1
+            continue
+        table = re.match(r"^(.+?)\s*\|\s*([\d.]+)\s*$", line)
+        if table and table.group(1).strip().lower() != "company":
+            rows.append((table.group(1).strip(), table.group(2).strip()))
+            index += 1
+            continue
+        if index + 1 < len(lines):
+            next_line = lines[index + 1]
+            pct = re.match(r"^([\d.]+)\s*%$", next_line)
+            if pct and not re.match(r"^[\d.]+\s*%$", line):
+                rows.append((line, pct.group(1).strip()))
+                index += 2
+                continue
+        index += 1
+    return rows
 
 
 def _flatten_portfolio_holdings(api: Any) -> str:
