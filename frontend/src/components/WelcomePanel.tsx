@@ -12,7 +12,10 @@ export function WelcomePanel({ onSelectExample, disabled }: Props) {
       <p className="mf-intro">
         Objective answers from 10 ICICI Prudential direct-growth schemes —
         expense ratio, exit load, SIP, benchmarks, and fund manager disclosures.
-        Every response cites the official ICICI Prudential AMC fund page.
+        Every response cites the official ICICI Prudential AMC fund page.{" "}
+        <strong>Include the fund name in each question</strong> (or select a
+        scheme in the sidebar); short follow-ups use the last fund you asked
+        about.
       </p>
 
       <div className="mf-card">

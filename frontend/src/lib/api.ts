@@ -13,6 +13,8 @@ export type ChatResponse = {
   type: "answer" | "refusal" | "structured";
   refusal_reason: string | null;
   structured: StructuredTablePayload | null;
+  /** Fund used for this answer — UI keeps it for short follow-ups (e.g. "AUM?"). */
+  scheme_id?: string | null;
 };
 
 export type ChatErrorKind = "network" | "server" | "config";

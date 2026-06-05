@@ -62,7 +62,7 @@ export function ChatComposer({
             className="mf-textarea"
             rows={compact ? 1 : 2}
             maxLength={4000}
-            placeholder="Ask about expense ratio, exit load, SIP, fund manager…"
+            placeholder="Include the fund name (e.g. bank index fund AUM) or pick a scheme…"
             value={input}
             onChange={(e) => onInputChange(e.target.value)}
             disabled={loading}
@@ -85,8 +85,8 @@ export function ChatComposer({
 
         <p className="mf-composer-hint">
           {compact
-            ? "Information sourced from official Scheme Information Documents."
-            : "No PAN, email, phone, or account details — chat only."}
+            ? "Name the fund in each question, or keep the scheme selected in the sidebar — follow-ups like “AUM?” use the last answered fund."
+            : "Name the fund in your question (e.g. “Large Cap expense ratio”) or select a scheme. No PAN, email, or account details."}
         </p>
       </form>
     </div>

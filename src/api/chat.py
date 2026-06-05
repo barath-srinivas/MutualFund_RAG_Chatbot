@@ -54,10 +54,13 @@ class ChatService:
         started = time.perf_counter()
         retrieval_hit: bool | None = None
         validator_failed = False
+        response_scheme_id: str | None = None
 
         def finish(result: dict) -> dict:
             from src.config.settings import get_settings
 
+            if response_scheme_id:
+                result["scheme_id"] = response_scheme_id
             if get_settings().metrics_enabled:
                 record_chat_outcome(
                     response_type=result.get("type", "answer"),
@@ -84,6 +87,7 @@ class ChatService:
             explicit_scheme_id=explicit_scheme_id,
             resolved_scheme_id=scheme_id,
         )
+        response_scheme_id = route.scheme_id
 
         if route.label == "advisory":
             return finish(advisory_refusal(today=today))

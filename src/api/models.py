@@ -25,3 +25,4 @@ class ChatResponse(BaseModel):
     type: Literal["answer", "refusal", "structured"] = "answer"
     refusal_reason: str | None = None
     structured: StructuredTablePayload | None = None
+    scheme_id: str | None = None

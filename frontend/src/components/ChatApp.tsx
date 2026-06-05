@@ -63,6 +63,9 @@ export function ChatApp() {
 
       try {
         const response: ChatResponse = await postChat(trimmed, scheme);
+        if (response.scheme_id) {
+          setSchemeId(response.scheme_id);
+        }
         setMessages((prev) => [
           ...prev,
           { id: nextId(), role: "assistant", response },
