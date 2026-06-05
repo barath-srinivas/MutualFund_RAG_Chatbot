@@ -7,6 +7,11 @@ on:
     # 04:30 UTC = 10:00 IST (UTC+5:30, no DST)
     - cron: "30 4 * * *"
   workflow_dispatch:
+    inputs:
+      force_reingest:
+        description: Re-fetch and re-index all sources even if raw page hash is unchanged
+        type: boolean
+        default: true
 
 concurrency:
   group: daily-ingest
@@ -44,11 +49,18 @@ jobs:
           esac
           URL="${BASE}/internal/ingest"
           STATUS_URL="${BASE}/corpus-status"
-          echo "POST ${URL}"
+          FORCE_REINGEST="false"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.force_reingest }}" = "true" ]; then
+            FORCE_REINGEST="true"
+          fi
+          PREV_FINISHED="$(curl -sS --max-time 30 "${STATUS_URL}" | jq -r '.last_ingest.finished_at // empty')"
+          echo "Previous last_ingest.finished_at: ${PREV_FINISHED:-<none>}"
+          echo "POST ${URL} (force=${FORCE_REINGEST})"
           RESPONSE_FILE="$(mktemp)"
           HTTP_CODE="$(curl -sS --max-time 120 -L --post301 --post302 -w "%{http_code}" -o "${RESPONSE_FILE}" -X POST "${URL}" \
             -H "Authorization: Bearer ${INGEST_TRIGGER_SECRET}" \
-            -H "Content-Type: application/json")"
+            -H "Content-Type: application/json" \
+            -d "{\"force\":${FORCE_REINGEST}}")"
           echo "HTTP ${HTTP_CODE}"
           cat "${RESPONSE_FILE}"
           if [ "${HTTP_CODE}" != "202" ] && [ "${HTTP_CODE}" != "200" ]; then
@@ -56,17 +68,22 @@ jobs:
             exit 1
           fi
 
-          echo "Polling ${STATUS_URL} until last_ingest is set (up to ~120 min)..."
+          echo "Polling ${STATUS_URL} until last_ingest updates (up to ~120 min)..."
           for attempt in $(seq 1 120); do
             sleep 60
             STATUS="$(curl -sS --max-time 30 "${STATUS_URL}")"
             echo "[$attempt] ${STATUS}"
-            # API returns compact JSON (no spaces); do not grep for ': null'
             if ! echo "${STATUS}" | jq -e '.last_ingest != null' >/dev/null; then
               continue
             fi
+            NEW_FINISHED="$(echo "${STATUS}" | jq -r '.last_ingest.finished_at // empty')"
+            if [ -n "${PREV_FINISHED}" ] && [ "${NEW_FINISHED}" = "${PREV_FINISHED}" ]; then
+              echo "last_ingest unchanged (${NEW_FINISHED}); waiting for new run..."
+              continue
+            fi
             CHUNKS="$(echo "${STATUS}" | jq -r '.chunk_count // 0')"
-            echo "last_ingest set, chunk_count=${CHUNKS}"
+            RUN_ID="$(echo "${STATUS}" | jq -r '.last_ingest.run_id // empty')"
+            echo "Ingest complete: run_id=${RUN_ID}, chunk_count=${CHUNKS}, finished_at=${NEW_FINISHED}"
             if [ "${CHUNKS}" -eq 0 ]; then
               echo "::warning::Ingest finished but chunk_count is 0 — check Railway logs for fetch/Playwright errors."
             fi

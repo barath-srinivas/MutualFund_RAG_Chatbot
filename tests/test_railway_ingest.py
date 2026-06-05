@@ -60,15 +60,17 @@ def test_internal_ingest_worker_runs_pipeline() -> None:
         total_chunks=5,
         chunks_by_scheme={"icici-large-cap": 5},
     )
-    with patch("src.api.internal_ingest.run_ingest", return_value=report):
+    with patch("src.api.internal_ingest.run_ingest", return_value=report) as mock_run:
         from src.api import internal_ingest as mod
 
         mod._running = True
         try:
-            mod._ingest_worker()
+            mod._ingest_worker(force=True)
         finally:
             mod._running = False
     assert mod._running is False
+    mock_run.assert_called_once()
+    assert mock_run.call_args.kwargs.get("force") is True
 
 
 def test_corpus_status_reads_last_ingest(ingest_client: TestClient, tmp_path: Path) -> None:
