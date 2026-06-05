@@ -79,12 +79,17 @@ def test_resolve_direct_growth_scheme_code() -> None:
 
 def test_parse_bundle_uses_holdings_tab_when_api_missing() -> None:
     holdings_tab = (
+        "Portfolio\n"
+        "Sectors\n"
         "Holdings\n"
-        "Top Holdings by Portfolio Weight (%)\n"
-        "HDFC Bank Ltd.\n"
+        "Credit Rating Profile\n"
         "18.92%\n"
-        "ICICI Bank Ltd.\n"
         "14.05%\n"
+        "9.97%\n"
+        "HDFC Bank Ltd.\n"
+        "ICICI Bank Ltd.\n"
+        "Axis Bank Ltd.\n"
+        "VIEW ALL\n"
     )
     bundle = json.dumps(
         {
@@ -99,6 +104,7 @@ def test_parse_bundle_uses_holdings_tab_when_api_missing() -> None:
     ).encode("utf-8")
     parsed = parse_amc_product_bundle(bundle)
     assert "HDFC Bank Ltd." in parsed["text"]
+    assert "18.92%" in parsed["text"]
     assert any(s.get("heading") == "Top holdings" for s in parsed["sections"])
 
 

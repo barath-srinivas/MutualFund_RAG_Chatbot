@@ -169,8 +169,13 @@ def _flatten_holdings_tab(text: str) -> str:
 def _holdings_rows_from_tab_text(text: str) -> list[tuple[str, str]]:
     if not text.strip():
         return []
-    rows: list[tuple[str, str]] = []
     lines = [line.strip() for line in text.splitlines() if line.strip()]
+
+    paired = _holdings_rows_percent_block_then_names(lines)
+    if paired:
+        return paired
+
+    rows: list[tuple[str, str]] = []
     skip_prefixes = (
         "holdings",
         "top holdings",
@@ -180,6 +185,7 @@ def _holdings_rows_from_tab_text(text: str) -> list[tuple[str, str]]:
         "sector",
         "fund manager",
         "as on",
+        "credit rating",
     )
     index = 0
     while index < len(lines):
@@ -207,6 +213,51 @@ def _holdings_rows_from_tab_text(text: str) -> list[tuple[str, str]]:
                 continue
         index += 1
     return rows
+
+
+def _holdings_rows_percent_block_then_names(lines: list[str]) -> list[tuple[str, str]]:
+    """
+    AMC product pages often render holdings as a column of weights, then names:
+      Holdings / Credit Rating Profile / 18.92% / 14.05% / ... / HDFC Bank Ltd. / ...
+    """
+    start = 0
+    for index, line in enumerate(lines):
+        if line.strip().lower() == "holdings":
+            start = index
+            break
+
+    window = lines[start : start + 80]
+    percentages: list[str] = []
+    names: list[str] = []
+    for line in window:
+        lower = line.lower()
+        if lower in {"holdings", "sectors", "portfolio", "credit rating profile"}:
+            continue
+        if lower.startswith("view all") or lower.startswith("more details"):
+            break
+        pct = re.match(r"^([\d.]+)\s*%$", line)
+        if pct:
+            percentages.append(pct.group(1))
+            continue
+        if _looks_like_holding_name(line):
+            names.append(line)
+    if not percentages or not names:
+        return []
+    return list(zip(names, percentages))[:25]
+
+
+def _looks_like_holding_name(line: str) -> bool:
+    if len(line) < 4 or "%" in line:
+        return False
+    if line.lower().startswith(("view ", "more ", "fund ", "scheme ", "as on", "sip", "swp")):
+        return False
+    return bool(
+        re.search(
+            r"(Ltd\.?|Bank|Finance|India|NABARD|GOI|Corp\.?|Co\.?|Industries|Services)",
+            line,
+            re.IGNORECASE,
+        )
+    )
 
 
 def _flatten_portfolio_holdings(api: Any) -> str:
