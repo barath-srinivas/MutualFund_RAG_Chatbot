@@ -80,4 +80,9 @@ def _dedupe_by_source_url(chunks: list[RetrievedChunk]) -> list[RetrievedChunk]:
         existing = best_by_key.get(key)
         if existing is None or chunk.score > existing.score:
             best_by_key[key] = chunk
-    return sorted(best_by_key.values(), key=lambda c: c.score, reverse=True)
+    # Preserve caller order (intent-prioritized) while deduping by section.
+    order = {chunk.chunk_id: index for index, chunk in enumerate(chunks)}
+    return sorted(
+        best_by_key.values(),
+        key=lambda c: (order.get(c.chunk_id, 9999), -c.score),
+    )

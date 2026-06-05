@@ -24,6 +24,7 @@ Session log for first-time production deploy of **MutualFund_RAG_Chatbot** to [R
 | 10 | Chroma posthog telemetry | `capture() takes 1 positional argument but 3 were given` | Harmless — ignore during ops |
 | 11 | Private vs public URL | Confusion over `*.railway.internal` | GitHub/Vercel use **public** `https://….up.railway.app` only |
 | 12 | Vercel build — missing `@/data/*` | `Module not found: '@/data/schemes'` | `.gitignore` `data/` → `/data/`; commit `frontend/src/data/*.ts` |
+| 13 | Scheduled ingest never fired | No run at 10:00 IST; all runs `workflow_dispatch` | GitHub cron not queued — wait for next slot or push to `main` to resync |
 
 ---
 
@@ -236,7 +237,7 @@ Mount at `/app/data` so `data/chroma` and `last_ingest.json` persist across depl
 |------|--------|
 | **Vercel** — import repo, root `frontend/`, `NEXT_PUBLIC_API_BASE_URL` | Pending |
 | **CORS_ORIGINS** — replace placeholder with real Vercel URL(s) | Pending |
-| **Scheduled ingest** — cron `30 4 * * *` UTC (10:00 IST) | Configured; should work on Hobby with adequate memory |
+| **Scheduled ingest** — cron `30 4 * * *` UTC (10:00 IST) | Configured; **first auto run missed 2026-06-05** — see §14; verify **Scheduled** trigger on 2026-06-06 |
 
 ---
 
@@ -254,6 +255,49 @@ Module not found: Can't resolve '@/data/schemes'
 **Fix:** Change `.gitignore` to `/data/` (repo-root Chroma volume only) and commit `frontend/src/data/*.ts`.
 
 **Verify:** Vercel redeploy succeeds; scheme picker and example questions render.
+
+---
+
+## 14. GitHub Actions — scheduled cron did not fire (2026-06-05)
+
+**Symptom:** No workflow run at **10:00 IST** (04:30 UTC) on 2026-06-05. Corpus was refreshed only via **manual** runs (`workflow_dispatch`).
+
+**Evidence (via `gh run list --workflow=daily-ingest.yml`):**
+
+- **9** runs total — **all** `event: workflow_dispatch`; **zero** `event: schedule`.
+- Query for `2026-06-05T04:00–05:00Z` returned **no runs** (scheduled slot is `30 4 * * *` UTC).
+- Manual runs on 2026-06-05: **03:06 UTC** (08:36 IST, success), **10:00 UTC** (15:30 IST, success). The 10:00 **UTC** run is **not** the cron slot (cron is 04:30 UTC = 10:00 IST).
+
+**Ruled out (workflow config is correct):**
+
+| Check | Status |
+|-------|--------|
+| Cron `30 4 * * *` in `.github/workflows/daily-ingest.yml` | OK |
+| Workflow on `main` since initial commit (`44ddfef`) | OK |
+| `gh workflow list` → **active** | OK |
+| Repo public; Actions enabled | OK |
+| Secrets / Railway ingest | OK — manual runs succeed, `last_ingest` updates |
+
+If secrets or Railway were wrong, GitHub would still **create** a scheduled run (it would fail). **No run was created** — GitHub’s scheduler never queued the job.
+
+**Likely causes:**
+
+1. **New repo / first cron slot** — Repo and workflow are ~1 day old; GitHub sometimes skips the first eligible `schedule` event even when `workflow_dispatch` works.
+2. **Dropped scheduled job** — [GitHub docs](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule): under load, queued cron jobs can be **delayed or dropped** with no run record.
+3. **Scheduler sync** — Occasional backend glitches; a harmless commit to `main` can re-register the cron.
+
+**Action:**
+
+1. **2026-06-06 ~10:00 IST (04:30 UTC):** Actions → **Daily corpus refresh (10:00 IST)** → confirm trigger shows **Scheduled** (not “Manually run by…”).
+2. If still no scheduled run: push a trivial commit to `main` or re-save the workflow file to resync.
+3. Until cron is verified, manual **Run workflow** is a safe fallback (corpus already updated on 2026-06-05 via manual run #9).
+
+**Verify scheduled vs manual:**
+
+```bash
+gh run list --workflow=daily-ingest.yml --limit 5 --json event,createdAt,conclusion
+# expect event: "schedule" after a successful cron fire
+```
 
 ---
 
@@ -283,3 +327,4 @@ Module not found: Can't resolve '@/data/schemes'
 | Count stuck, only `/corpus-status` in logs | OOM restart; increase memory or one-fund shell ingest |
 | Count rises by ~7, `last_ingest` null | In progress — wait for full run |
 | Chroma posthog errors | Ignore |
+| No run at 10:00 IST; only manual runs | GitHub cron not queued — see §14; check `event: schedule` via `gh run list` |

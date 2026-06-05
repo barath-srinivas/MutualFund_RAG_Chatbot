@@ -29,6 +29,7 @@ from src.ingest.manifest import load_manifest
 from src.retrieval.citations import preferred_citation_url
 from src.retrieval.assembler import assemble_context
 from src.retrieval.fund_manager_answer import build_fund_manager_answer
+from src.retrieval.holdings_answer import build_holdings_answer
 from src.retrieval.models import AssembledContext
 from src.retrieval.retriever import Retriever
 from src.observability.metrics import record_chat_outcome
@@ -161,25 +162,34 @@ class ChatService:
             allowed_domains=settings.allowed_domain_list(),
         )
 
-        if (
-            intent == QueryIntent.FUND_MANAGEMENT
-            and scheme_name
-            and preferred_url
-            and context is not None
-        ):
-            direct = build_fund_manager_answer(
-                scheme_display_name=scheme_name,
-                context=context,
-                citation_url=preferred_url,
-                last_updated=last_updated,
-            )
+        if scheme_name and preferred_url and context is not None:
+            if intent == QueryIntent.FUND_MANAGEMENT:
+                direct = build_fund_manager_answer(
+                    scheme_display_name=scheme_name,
+                    context=context,
+                    citation_url=preferred_url,
+                    last_updated=last_updated,
+                )
+                max_sentences = settings.answer_max_sentences_fund_management
+            elif intent == QueryIntent.HOLDINGS:
+                direct = build_holdings_answer(
+                    scheme_display_name=scheme_name,
+                    context=context,
+                    citation_url=preferred_url,
+                    last_updated=last_updated,
+                )
+                max_sentences = settings.answer_max_sentences_holdings
+            else:
+                direct = None
+                max_sentences = settings.answer_max_sentences
+
             if direct:
                 validated = validate_answer(
                     direct,
                     citation_url=preferred_url,
                     last_updated=last_updated,
                     allow_performance_numbers=False,
-                    max_sentences=settings.answer_max_sentences_fund_management,
+                    max_sentences=max_sentences,
                 )
                 if validated.citation_url:
                     return finish({
@@ -279,14 +289,23 @@ def _retrieval_hit(retrieval_result, context: AssembledContext | None) -> bool:
 
 
 def _generation_context_text(context: AssembledContext, *, intent: QueryIntent) -> str:
-    """For fund-manager questions, pass only Fund Manager chunks so the LLM does not add TER/SIP."""
-    if intent != QueryIntent.FUND_MANAGEMENT:
+    """Pass intent-focused sections so the LLM does not answer from the wrong block."""
+    if intent == QueryIntent.FUND_MANAGEMENT:
+        focused = [
+            c
+            for c in context.chunks
+            if (c.section or "").strip().lower() == "fund manager"
+        ]
+        if focused:
+            return assemble_context(focused).context_text
         return context.context_text
-    fm_chunks = [
-        c
-        for c in context.chunks
-        if (c.section or "").strip().lower() == "fund manager"
-    ]
-    if not fm_chunks:
+    if intent == QueryIntent.HOLDINGS:
+        focused = [
+            c
+            for c in context.chunks
+            if (c.section or "").strip().lower() in {"top holdings", "sector allocation"}
+        ]
+        if focused:
+            return assemble_context(focused).context_text
         return context.context_text
-    return assemble_context(fm_chunks).context_text
+    return context.context_text

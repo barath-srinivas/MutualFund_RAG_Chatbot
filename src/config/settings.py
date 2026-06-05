@@ -61,6 +61,7 @@ class Settings(BaseSettings):
     # Standard factual answers (type=answer)
     answer_max_sentences: int = 3
     answer_max_sentences_fund_management: int = 6
+    answer_max_sentences_holdings: int = 4
     # Structured table responses (type=structured) — only when user asks for table/list-all
     structured_summary_max_sentences: int = 2
     structured_max_rows: int = 12

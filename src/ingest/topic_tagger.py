@@ -33,11 +33,6 @@ _BENCHMARK = re.compile(
     r"benchmark|riskometer|risk\s+meter",
     re.IGNORECASE,
 )
-_HOLDINGS = re.compile(
-    r"top\s+holdings|portfolio\s+holdings|sector\s+allocation|holdings\s+by\s+portfolio",
-    re.IGNORECASE,
-)
-
 _SECTION_PART_SUFFIX = re.compile(r"\s*\(part\s+\d+\)$", re.IGNORECASE)
 
 
@@ -90,6 +85,4 @@ def tag_chunk_topic(
         return "fees"
     if _BENCHMARK.search(combined):
         return "benchmark"
-    if _HOLDINGS.search(combined):
-        return "fund_management"
     return None

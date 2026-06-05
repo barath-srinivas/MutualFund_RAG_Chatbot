@@ -51,6 +51,13 @@ def rerank_chunks(
         if query_tokens and _keyword_overlap(query_tokens, chunk.text):
             score += _KEYWORD_BOOST
 
+        if intent == QueryIntent.HOLDINGS:
+            heading = (chunk.section or "").strip().lower()
+            if heading == "top holdings":
+                score += 0.28
+            elif heading == "sector allocation":
+                score += 0.08
+
         chunk.score = score
         scored.append((score, chunk))
 

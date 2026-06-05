@@ -134,6 +134,8 @@ class Retriever:
 
         top_k = min(self._settings.retrieval_top_k, len(chunks))
         selected = chunks[:top_k]
+        if intent == QueryIntent.HOLDINGS:
+            selected = _ensure_holdings_sections(selected, chunks, max_k=top_k)
         selected = _prioritize_for_context(selected, message, intent=intent)
 
         best_score = max((c.score for c in selected), default=0.0)
@@ -204,6 +206,40 @@ def _prioritize_for_context(
         return (section_hit, keyword_hit, chunk.score)
 
     return sorted(chunks, key=sort_key, reverse=True)
+
+
+def _ensure_holdings_sections(
+    selected: list[RetrievedChunk],
+    candidates: list[RetrievedChunk],
+    *,
+    max_k: int,
+) -> list[RetrievedChunk]:
+    """Keep Top holdings (and sector allocation) in context for holdings questions."""
+    required = ("top holdings", "sector allocation")
+    out = list(selected)
+    for heading in required:
+        match = next(
+            (c for c in candidates if (c.section or "").strip().lower() == heading),
+            None,
+        )
+        if match is None or match in out:
+            continue
+        if len(out) < max_k:
+            out.append(match)
+            continue
+        drop_index = next(
+            (
+                i
+                for i, c in enumerate(out)
+                if (c.section or "").strip().lower() not in required
+            ),
+            None,
+        )
+        if drop_index is not None:
+            out[drop_index] = match
+        else:
+            out[-1] = match
+    return out
 
 
 def _section_matches_intent(section: str, intent: QueryIntent) -> bool:
